@@ -147,6 +147,7 @@ export function shallowRef(value?: unknown) {
   return createRef(value, true)
 }
 
+// 创建ref数据
 function createRef(rawValue: unknown, shallow: boolean) {
   if (isRef(rawValue)) {
     return rawValue
