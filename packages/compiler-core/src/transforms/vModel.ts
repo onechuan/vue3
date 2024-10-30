@@ -20,6 +20,13 @@ import { IS_REF } from '../runtimeHelpers'
 import { BindingTypes } from '../options'
 import { camelize } from '@vue/shared'
 
+/**
+ * model转换函数
+ * @param dir 
+ * @param node 
+ * @param context 
+ * @returns 
+ */
 export const transformModel: DirectiveTransform = (dir, node, context) => {
   const { exp, arg } = dir
   if (!exp) {

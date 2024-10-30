@@ -23,11 +23,17 @@ import { extend } from '@vue/shared'
 
 export { parserOptions }
 
+/**
+ * 添加了一个transformStyle转换函数，用于处理dom上的style属性
+ */
 export const DOMNodeTransforms: NodeTransform[] = [
   transformStyle,
   ...(__DEV__ ? [transformTransition] : []),
 ]
 
+/**
+ * 添加了一个directiveTransforms转换函数，用于处理dom标签上的指令函数
+ */
 export const DOMDirectiveTransforms: Record<string, DirectiveTransform> = {
   cloak: noopDirectiveTransform,
   html: transformVHtml,
@@ -37,23 +43,36 @@ export const DOMDirectiveTransforms: Record<string, DirectiveTransform> = {
   show: transformShow,
 }
 
+/**
+ * compile函数返回的是@vue/compiler-core中的baseCompile函数
+ * @param src 
+ * @param options 
+ * @returns 
+ */
 export function compile(
   src: string | RootNode,
   options: CompilerOptions = {},
 ): CodegenResult {
   return baseCompile(
     src,
-    extend({}, parserOptions, options, {
+    extend(
+      {}, 
+      parserOptions, options, 
+      {
+      // 包含了很多的transform转换函数，用于处理AST抽象语法树
       nodeTransforms: [
         // ignore <script> and <tag>
         // this is not put inside DOMNodeTransforms because that list is used
         // by compiler-ssr to generate vnode fallback branches
         ignoreSideEffectTags,
+        // 添加了一个transformStyle转换函数，用于处理dom上的style属性
         ...DOMNodeTransforms,
         ...(options.nodeTransforms || []),
       ],
+      // 
       directiveTransforms: extend(
         {},
+        // 添加了一个directiveTransforms转换函数，用于处理dom标签上的指令函数
         DOMDirectiveTransforms,
         options.directiveTransforms || {},
       ),

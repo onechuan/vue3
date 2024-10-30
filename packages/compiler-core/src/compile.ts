@@ -28,15 +28,20 @@ export type TransformPreset = [
   Record<string, DirectiveTransform>,
 ]
 
+/**
+ * 获取基础的预设转换函数transform
+ * @param prefixIdentifiers 
+ * @returns 处理指令的转换函数数组
+ */
 export function getBaseTransformPreset(
   prefixIdentifiers?: boolean,
 ): TransformPreset {
   return [
     [
-      transformOnce,
-      transformIf,
-      transformMemo,
-      transformFor,
+      transformOnce, // v-once
+      transformIf, // v-if 
+      transformMemo, // v-memo
+      transformFor, // v-for
       ...(__COMPAT__ ? [transformFilter] : []),
       ...(!__BROWSER__ && prefixIdentifiers
         ? [
@@ -47,7 +52,7 @@ export function getBaseTransformPreset(
         : __BROWSER__ && __DEV__
           ? [transformExpression]
           : []),
-      transformSlotOutlet,
+      transformSlotOutlet, // v-slot
       transformElement,
       trackSlotScopes,
       transformText,
@@ -59,11 +64,16 @@ export function getBaseTransformPreset(
     },
   ]
 }
-
+/**
+ * html字符串转ast抽象语法树 -> nodeTransforms数组 和 directiveTransforms对象 -> 执行transforms函数，nodeTransforms处理ast抽象语法树所有的node节点，directiveTransforms处理指令得到ast抽象语法树
+ * @param source 接收一个html字符串，也可以是html字符串编译后的ast抽象语法树
+ * @param options options.nodeTransforms数组属性和options.directiveTransforms对象属性
+ * @returns render函数
+ */
 // we name it `baseCompile` so that higher order compilers like
 // @vue/compiler-dom can export `compile` while re-exporting everything else.
 export function baseCompile(
-  source: string | RootNode,
+  source: string | RootNode, 
   options: CompilerOptions = {},
 ): CodegenResult {
   const onError = options.onError || defaultOnError
@@ -89,9 +99,10 @@ export function baseCompile(
   const resolvedOptions = extend({}, options, {
     prefixIdentifiers,
   })
+  // source是html字符串，baseParse解析html字符串，返回ast抽象语法树
   const ast = isString(source) ? baseParse(source, resolvedOptions) : source
-  const [nodeTransforms, directiveTransforms] =
-    getBaseTransformPreset(prefixIdentifiers)
+  // nodeTransforms数组属性和directiveTransforms对象属性
+  const [nodeTransforms, directiveTransforms] = getBaseTransformPreset(prefixIdentifiers)
 
   if (!__BROWSER__ && options.isTS) {
     const { expressionPlugins } = options
@@ -100,6 +111,7 @@ export function baseCompile(
     }
   }
 
+  // 执行transforms函数，nodeTransforms处理ast抽象语法树所有的node节点，directiveTransforms处理指令得到ast抽象语法树
   transform(
     ast,
     extend({}, resolvedOptions, {
@@ -107,6 +119,7 @@ export function baseCompile(
         ...nodeTransforms,
         ...(options.nodeTransforms || []), // user transforms
       ],
+      // 其实可以理解，基于core包中的directiveTransforms进行拓展
       directiveTransforms: extend(
         {},
         directiveTransforms,
@@ -115,5 +128,12 @@ export function baseCompile(
     }),
   )
 
+  // interface CodegenResult {
+  //   code: string  编译好的render函数
+  //   preamble: string
+  //   ast: RootNode
+  //   map?: RawSourceMap
+  // }
+  // 调用generate函数，将ast抽象语法树进行字符串拼接，拼成render函数
   return generate(ast, resolvedOptions)
 }

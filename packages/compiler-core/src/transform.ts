@@ -320,6 +320,11 @@ export function createTransformContext(
   return context
 }
 
+/**
+ * transform转换函数
+ * @param root AST抽象语法树
+ * @param options 包含nodeTransforms数组和directiveTransforms对象
+ */
 export function transform(root: RootNode, options: TransformOptions) {
   const context = createTransformContext(root, options)
   traverseNode(root, context)

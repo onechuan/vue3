@@ -104,6 +104,11 @@ function preprocess(
   return res
 }
 
+/**
+ * 编译模板，将vue文件编译成js文件
+ * @param options 
+ * @returns 
+ */
 export function compileTemplate(
   options: SFCTemplateCompileOptions,
 ): SFCTemplateCompileResults {
@@ -159,6 +164,11 @@ export function compileTemplate(
   }
 }
 
+/**
+ * 
+ * @param param0 
+ * @returns 
+ */
 function doCompileTemplate({
   filename,
   id,
@@ -227,24 +237,31 @@ function doCompileTemplate({
     inAST = createRoot(template.children, inAST.source)
   }
 
-  let { code, ast, preamble, map } = compiler.compile(inAST || source, {
-    mode: 'module',
-    prefixIdentifiers: true,
-    hoistStatic: true,
-    cacheHandlers: true,
-    ssrCssVars:
-      ssr && ssrCssVars && ssrCssVars.length
-        ? genCssVarsFromList(ssrCssVars, shortId, isProd, true)
-        : '',
-    scopeId: scoped ? longId : undefined,
-    slotted,
-    sourceMap: true,
-    ...compilerOptions,
-    hmr: !isProd,
-    nodeTransforms: nodeTransforms.concat(compilerOptions.nodeTransforms || []),
-    filename,
-    onError: e => errors.push(e),
-    onWarn: w => warnings.push(w),
+  /**
+   * 调用这个compiler.compile函数就是调用@vue/compiler-dom包中的compile函数
+   * compile函数直接返回的是@vue/compiler-core中的baseCompile函数。
+   * 为什么不直接返回@vue/compiler-core中的baseCompile函数呢，这是因为@vue/compiler-core中的baseCompile函数是核心API，会运行在各种js环境：浏览器、Node服务端等
+   */
+  let { code, ast, preamble, map } = compiler.compile(
+    inAST || source, // 可以是AST抽象语法树,也可以是template模块中的html代码字符串
+    {
+      mode: 'module',
+      prefixIdentifiers: true,
+      hoistStatic: true,
+      cacheHandlers: true,
+      ssrCssVars:
+        ssr && ssrCssVars && ssrCssVars.length
+          ? genCssVarsFromList(ssrCssVars, shortId, isProd, true)
+          : '',
+      scopeId: scoped ? longId : undefined,
+      slotted,
+      sourceMap: true,
+      ...compilerOptions,
+      hmr: !isProd,
+      nodeTransforms: nodeTransforms.concat(compilerOptions.nodeTransforms || []),
+      filename,
+      onError: e => errors.push(e),
+      onWarn: w => warnings.push(w),
   })
 
   // inMap should be the map produced by ./parse.ts which is a simple line-only
