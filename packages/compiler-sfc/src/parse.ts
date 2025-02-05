@@ -42,11 +42,13 @@ export interface SFCBlock {
   src?: string
 }
 
+// 模板块
 export interface SFCTemplateBlock extends SFCBlock {
   type: 'template'
   ast?: RootNode
 }
 
+// 脚本块
 export interface SFCScriptBlock extends SFCBlock {
   type: 'script'
   setup?: string | boolean
@@ -63,12 +65,14 @@ export interface SFCScriptBlock extends SFCBlock {
   deps?: string[]
 }
 
+// 样式块
 export interface SFCStyleBlock extends SFCBlock {
   type: 'style'
   scoped?: boolean
   module?: string | boolean
 }
 
+// SFC描述符
 export interface SFCDescriptor {
   filename: string
   source: string
@@ -76,7 +80,7 @@ export interface SFCDescriptor {
   script: SFCScriptBlock | null
   scriptSetup: SFCScriptBlock | null
   styles: SFCStyleBlock[]
-  customBlocks: SFCBlock[]
+  customBlocks: SFCBlock[] // 自定义块
   cssVars: string[]
   /**
    * whether the SFC uses :slotted() modifier.
@@ -104,6 +108,8 @@ export const parseCache:
   | Map<string, SFCParseResult>
   | LRUCache<string, SFCParseResult> = createCache<SFCParseResult>()
 
+
+// 解析：将模板字符串解析成抽象语法树AST
 export function parse(
   source: string,
   options: SFCParseOptions = {},
@@ -141,6 +147,7 @@ export function parse(
   }
 
   const errors: (CompilerError | SyntaxError)[] = []
+  // 解析模板字符串
   const ast = compiler.parse(source, {
     parseMode: 'sfc',
     prefixIdentifiers: true,

@@ -276,13 +276,21 @@ function createCodegenContext(
   return context
 }
 
+/**
+ * 从 AST 到可执行代码的核心转换器，通过逐层处理 AST 节点，最终生成高效的渲染函数。
+ * @param ast 经过transform后的AST
+ * @param options 
+ * @returns 
+ */
 export function generate(
   ast: RootNode,
   options: CodegenOptions & {
     onContextCreated?: (context: CodegenContext) => void
   } = {},
 ): CodegenResult {
+  // 创建代码生成上下文
   const context = createCodegenContext(ast, options)
+  // 如果提供了回调函数，在上下文创建后触发，允许外部修改上下文
   if (options.onContextCreated) options.onContextCreated(context)
   const {
     mode,
@@ -304,12 +312,16 @@ export function generate(
   // preambles
   // in setup() inline mode, the preamble is generated in a sub context
   // and returned separately.
+  // 处理内联 setup 模式的前置代码
   const preambleContext = isSetupInlined
     ? createCodegenContext(ast, options)
     : context
+
   if (!__BROWSER__ && mode === 'module') {
+    // 模块模式前置代码（如 import 语句）
     genModulePreamble(ast, preambleContext, genScopeId, isSetupInlined)
   } else {
+    // 函数模式前置代码（如变量声明）
     genFunctionPreamble(ast, preambleContext)
   }
   // enter render function
@@ -319,11 +331,13 @@ export function generate(
     // binding optimization args
     args.push('$props', '$setup', '$data', '$options')
   }
+  // 函数模式前置代码（如变量声明）
   const signature =
     !__BROWSER__ && options.isTS
       ? args.map(arg => `${arg}: any`).join(',')
       : args.join(', ')
 
+  // 生成函数体
   if (isSetupInlined) {
     push(`(${signature}) => {`)
   } else {
@@ -346,12 +360,14 @@ export function generate(
   }
 
   // generate asset resolution statements
+  // 生成组件解析代码（如 _component_MyComp = _resolveComponent("MyComp")）
   if (ast.components.length) {
     genAssets(ast.components, 'component', context)
     if (ast.directives.length || ast.temps > 0) {
       newline()
     }
   }
+  // 生成指令解析代码（如 _directive_foo = _resolveDirective("foo")）
   if (ast.directives.length) {
     genAssets(ast.directives, 'directive', context)
     if (ast.temps > 0) {
@@ -376,6 +392,7 @@ export function generate(
   }
 
   // generate the VNode tree expression
+  // 生成 VNode 树表达式
   if (!ssr) {
     push(`return `)
   }

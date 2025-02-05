@@ -254,6 +254,10 @@ export const ARRAY_ITERATE_KEY: unique symbol = Symbol(
  * @param key - Identifier of the reactive property to track.
  */
 export function track(target: object, type: TrackOpTypes, key: unknown): void {
+  /**
+   * shouldTrack：用于控制是否应该进行依赖收集。只有在满足某些条件（例如当前有正在运行的副作用）时，才会进行依赖追踪。
+   * 
+   */
   if (shouldTrack && activeSub) {
     let depsMap = targetMap.get(target)
     if (!depsMap) {

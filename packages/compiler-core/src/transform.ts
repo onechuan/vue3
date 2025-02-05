@@ -328,12 +328,27 @@ export function createTransformContext(
   return context
 }
 
+/**
+ * transform的作用是将AST节点转换为渲染函数需要的AST节点
+ * 步骤如下：
+ * 1、创建转换上下文`context`
+ * 2、遍历AST节点，并进行节点转换
+ * 3、如果启动了`hoistStatic`选项，则进行静态提升优化
+ * 
+ * @param root 
+ * @param options 
+ */
 export function transform(root: RootNode, options: TransformOptions): void {
+  // 创建转换上下文对象，包含一些共享的状态、工具函数、配置选项等，供后续的转换过程使用
   const context = createTransformContext(root, options)
+  // 遍历AST节点，并根据context中的配置对节点进行转换
   traverseNode(root, context)
+  // 静态提升
   if (options.hoistStatic) {
+    // 静态提升是一种优化技术，将静态内容（如纯文本节点、静态元素节点）提取到渲染函数外部，避免在每次渲染时重复创建这些节点。
     cacheStatic(root, context)
   }
+  // 创建根节点的代码生成器
   if (!options.ssr) {
     createRootCodegen(root, context)
   }

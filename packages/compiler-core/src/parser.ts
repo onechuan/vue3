@@ -1035,11 +1035,14 @@ function reset() {
   stack.length = 0
 }
 
+// baseParse函数用于将模板字符串解析成AST语法树
 export function baseParse(input: string, options?: ParserOptions): RootNode {
+  // 初始化
   reset()
   currentInput = input
   currentOptions = extend({}, defaultParserOptions)
 
+  // 传入的options，进行合并
   if (options) {
     let key: keyof ParserOptions
     for (key in options) {
@@ -1063,6 +1066,7 @@ export function baseParse(input: string, options?: ParserOptions): RootNode {
     }
   }
 
+  // 根据传入的options，设置解析模式
   tokenizer.mode =
     currentOptions.parseMode === 'html'
       ? ParseMode.HTML
@@ -1070,20 +1074,23 @@ export function baseParse(input: string, options?: ParserOptions): RootNode {
         ? ParseMode.SFC
         : ParseMode.BASE
 
+  // 根据传入的options，设置解析xml命名空间
   tokenizer.inXML =
     currentOptions.ns === Namespaces.SVG ||
     currentOptions.ns === Namespaces.MATH_ML
 
+  // 根据传入的options，设置分隔符， toCharCodes是将字符串转换为字符串编码数组的工具函数
   const delimiters = options && options.delimiters
   if (delimiters) {
     tokenizer.delimiterOpen = toCharCodes(delimiters[0])
     tokenizer.delimiterClose = toCharCodes(delimiters[1])
   }
 
-  const root = (currentRoot = createRoot([], input))
-  tokenizer.parse(currentInput)
+  // 创建根节点并解析输入
+  const root = (currentRoot = createRoot([], input)) // 创建空的根节点root，将其赋值给currentRoot
+  tokenizer.parse(currentInput) // 解析currentInput，生成AST的子节点
   root.loc = getLoc(0, input.length)
-  root.children = condenseWhitespace(root.children)
-  currentRoot = null
+  root.children = condenseWhitespace(root.children) // 对根节点的子节点进行空白字符的压缩处理
+  currentRoot = null // 将 currentRoot 重置为 null，表示解析完成
   return root
 }
