@@ -256,7 +256,7 @@ export const ARRAY_ITERATE_KEY: unique symbol = Symbol(
 export function track(target: object, type: TrackOpTypes, key: unknown): void {
   /**
    * shouldTrack：用于控制是否应该进行依赖收集。只有在满足某些条件（例如当前有正在运行的副作用）时，才会进行依赖追踪。
-   * 
+   * activeSub：代表当前正在执行的副作用，通常是一个 副作用函数 或 依赖对象。如果有活动的副作用，则说明此时读取的属性与这个副作用有关，需要收集这个依赖。
    */
   if (shouldTrack && activeSub) {
     let depsMap = targetMap.get(target)
