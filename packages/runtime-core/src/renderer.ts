@@ -101,12 +101,12 @@ export type ElementNamespace = 'svg' | 'mathml' | undefined
 export type RootRenderFunction<HostElement = RendererElement> = (
   vnode: VNode | null,
   container: HostElement,
-  namespace?: ElementNamespace,
+  namespace?: ElementNamespace
 ) => void
 
 export interface RendererOptions<
   HostNode = RendererNode,
-  HostElement = RendererElement,
+  HostElement = RendererElement
 > {
   patchProp(
     el: HostElement,
@@ -114,7 +114,7 @@ export interface RendererOptions<
     prevValue: any,
     nextValue: any,
     namespace?: ElementNamespace,
-    parentComponent?: ComponentInternalInstance | null,
+    parentComponent?: ComponentInternalInstance | null
   ): void
   insert(el: HostNode, parent: HostElement, anchor?: HostNode | null): void
   remove(el: HostNode): void
@@ -122,7 +122,7 @@ export interface RendererOptions<
     type: string,
     namespace?: ElementNamespace,
     isCustomizedBuiltIn?: string,
-    vnodeProps?: (VNodeProps & { [key: string]: any }) | null,
+    vnodeProps?: (VNodeProps & { [key: string]: any }) | null
   ): HostElement
   createText(text: string): HostNode
   createComment(text: string): HostNode
@@ -139,7 +139,7 @@ export interface RendererOptions<
     anchor: HostNode | null,
     namespace: ElementNamespace,
     start?: HostNode | null,
-    end?: HostNode | null,
+    end?: HostNode | null
   ): [HostNode, HostNode]
 }
 
@@ -158,7 +158,7 @@ export interface RendererElement extends RendererNode {}
 // to optimize bundle size.
 export interface RendererInternals<
   HostNode = RendererNode,
-  HostElement = RendererElement,
+  HostElement = RendererElement
 > {
   p: PatchFn
   um: UnmountFn
@@ -184,7 +184,7 @@ type PatchFn = (
   parentSuspense?: SuspenseBoundary | null,
   namespace?: ElementNamespace,
   slotScopeIds?: string[] | null,
-  optimized?: boolean,
+  optimized?: boolean
 ) => void
 
 type MountChildrenFn = (
@@ -196,7 +196,7 @@ type MountChildrenFn = (
   namespace: ElementNamespace,
   slotScopeIds: string[] | null,
   optimized: boolean,
-  start?: number,
+  start?: number
 ) => void
 
 type PatchChildrenFn = (
@@ -208,7 +208,7 @@ type PatchChildrenFn = (
   parentSuspense: SuspenseBoundary | null,
   namespace: ElementNamespace,
   slotScopeIds: string[] | null,
-  optimized: boolean,
+  optimized: boolean
 ) => void
 
 type PatchBlockChildrenFn = (
@@ -218,7 +218,7 @@ type PatchBlockChildrenFn = (
   parentComponent: ComponentInternalInstance | null,
   parentSuspense: SuspenseBoundary | null,
   namespace: ElementNamespace,
-  slotScopeIds: string[] | null,
+  slotScopeIds: string[] | null
 ) => void
 
 type MoveFn = (
@@ -226,7 +226,7 @@ type MoveFn = (
   container: RendererElement,
   anchor: RendererNode | null,
   type: MoveType,
-  parentSuspense?: SuspenseBoundary | null,
+  parentSuspense?: SuspenseBoundary | null
 ) => void
 
 type NextFn = (vnode: VNode) => RendererNode | null
@@ -236,7 +236,7 @@ type UnmountFn = (
   parentComponent: ComponentInternalInstance | null,
   parentSuspense: SuspenseBoundary | null,
   doRemove?: boolean,
-  optimized?: boolean,
+  optimized?: boolean
 ) => void
 
 type RemoveFn = (vnode: VNode) => void
@@ -247,7 +247,7 @@ type UnmountChildrenFn = (
   parentSuspense: SuspenseBoundary | null,
   doRemove?: boolean,
   optimized?: boolean,
-  start?: number,
+  start?: number
 ) => void
 
 export type MountComponentFn = (
@@ -257,14 +257,14 @@ export type MountComponentFn = (
   parentComponent: ComponentInternalInstance | null,
   parentSuspense: SuspenseBoundary | null,
   namespace: ElementNamespace,
-  optimized: boolean,
+  optimized: boolean
 ) => void
 
 type ProcessTextOrCommentFn = (
   n1: VNode | null,
   n2: VNode,
   container: RendererElement,
-  anchor: RendererNode | null,
+  anchor: RendererNode | null
 ) => void
 
 export type SetupRenderEffectFn = (
@@ -274,7 +274,7 @@ export type SetupRenderEffectFn = (
   anchor: RendererNode | null,
   parentSuspense: SuspenseBoundary | null,
   namespace: ElementNamespace,
-  optimized: boolean,
+  optimized: boolean
 ) => void
 
 export enum MoveType {
@@ -285,7 +285,7 @@ export enum MoveType {
 
 export const queuePostRenderEffect: (
   fn: SchedulerJobs,
-  suspense: SuspenseBoundary | null,
+  suspense: SuspenseBoundary | null
 ) => void = __FEATURE_SUSPENSE__
   ? __TEST__
     ? // vitest can't seem to handle eager circular dependency
@@ -311,7 +311,7 @@ export const queuePostRenderEffect: (
  */
 export function createRenderer<
   HostNode = RendererNode,
-  HostElement = RendererElement,
+  HostElement = RendererElement
 >(options: RendererOptions<HostNode, HostElement>): Renderer<HostElement> {
   return baseCreateRenderer<HostNode, HostElement>(options)
 }
@@ -320,7 +320,7 @@ export function createRenderer<
 // Hydration logic is only used when calling this function, making it
 // tree-shakable.
 export function createHydrationRenderer(
-  options: RendererOptions<Node, Element>,
+  options: RendererOptions<Node, Element>
 ): HydrationRenderer {
   return baseCreateRenderer(options, createHydrationFunctions)
 }
@@ -328,19 +328,19 @@ export function createHydrationRenderer(
 // overload 1: no hydration
 function baseCreateRenderer<
   HostNode = RendererNode,
-  HostElement = RendererElement,
+  HostElement = RendererElement
 >(options: RendererOptions<HostNode, HostElement>): Renderer<HostElement>
 
 // overload 2: with hydration
 function baseCreateRenderer(
   options: RendererOptions<Node, Element>,
-  createHydrationFns: typeof createHydrationFunctions,
+  createHydrationFns: typeof createHydrationFunctions
 ): HydrationRenderer
 
 // implementation
 function baseCreateRenderer(
   options: RendererOptions,
-  createHydrationFns?: typeof createHydrationFunctions,
+  createHydrationFns?: typeof createHydrationFunctions
 ): any {
   // compile-time feature flags check
   if (__ESM_BUNDLER__ && !__TEST__) {
@@ -370,6 +370,35 @@ function baseCreateRenderer(
 
   // Note: functions inside this closure should use `const xxx = () => {}`
   // style in order to prevent being inlined by minifiers.
+  /**
+   * patch函数是整个渲染器的核心，它负责比较两个虚拟节点，并根据它们之间的差异进行更新。
+   *
+   * 1、如果n1和n2是相同的虚拟节点，则不进行任何操作
+   * 2、如果n1和n2是不同的虚拟节点，则根据它们的类型进行不同的处理
+   * 3、如果n1和n2是相同的虚拟节点，则进行更新
+   * 4、如果n1和n2是不同的虚拟节点，则进行卸载
+   * 5、如果n1和n2是不同的虚拟节点，则进行挂载
+   *
+   * vnode 分为不同的类型：
+   * 1、简单类型：文本、注释、static
+   * 2、复杂类型：组件、Fragment、Teleport、Suspense、Component
+   *
+   *
+   * patch函数的作用是判断vnode的节点类型，打上patchFlag标志，然后调用对应类型的vnode处理方式，进行更加细致的patch，最后进行render渲染。
+   *
+   * patchFlag是用于标识编译优化信息，即对vnode的属性进行描述的标志，通过patchFlag可以判断需要更新的内容，实现靶向更新。
+   *
+   * @param n1
+   * @param n2
+   * @param container
+   * @param anchor
+   * @param parentComponent
+   * @param parentSuspense
+   * @param namespace
+   * @param slotScopeIds
+   * @param optimized
+   * @returns
+   */
   const patch: PatchFn = (
     n1,
     n2,
@@ -379,32 +408,41 @@ function baseCreateRenderer(
     parentSuspense = null,
     namespace = undefined,
     slotScopeIds = null,
-    optimized = __DEV__ && isHmrUpdating ? false : !!n2.dynamicChildren,
+    optimized = __DEV__ && isHmrUpdating ? false : !!n2.dynamicChildren
   ) => {
+    // 如果n1和n2是相同的虚拟节点，则不进行任何操作
     if (n1 === n2) {
       return
     }
 
     // patching & not same type, unmount old tree
+    // 如果n1和n2是不同的虚拟节点，则卸载旧的树
     if (n1 && !isSameVNodeType(n1, n2)) {
+      // 获取下一个宿主节点
       anchor = getNextHostNode(n1)
+      // 卸载旧的树
       unmount(n1, parentComponent, parentSuspense, true)
       n1 = null
     }
 
+    // vue3 中，如果n2的patchFlag为PatchFlags.BAIL，则不进行优化
     if (n2.patchFlag === PatchFlags.BAIL) {
-      optimized = false
-      n2.dynamicChildren = null
+      optimized = false // 不进行优化
+      n2.dynamicChildren = null // 不进行动态子节点优化，当使用component动态组件时，会告诉vue渲染器放弃优化，执行完毕比较
     }
 
+    // 根据n2节点的不同类型进行不同的处理
     const { type, ref, shapeFlag } = n2
     switch (type) {
+      // 文本节点
       case Text:
         processText(n1, n2, container, anchor)
         break
+      // 注释节点
       case Comment:
         processCommentNode(n1, n2, container, anchor)
         break
+      // 静态节点
       case Static:
         if (n1 == null) {
           mountStaticNode(n2, container, anchor, namespace)
@@ -412,6 +450,7 @@ function baseCreateRenderer(
           patchStaticNode(n1, n2, container, namespace)
         }
         break
+      // Fragment 碎片节点
       case Fragment:
         processFragment(
           n1,
@@ -422,10 +461,12 @@ function baseCreateRenderer(
           parentSuspense,
           namespace,
           slotScopeIds,
-          optimized,
+          optimized
         )
         break
+      // 元素节点
       default:
+        // 如果n2的类型是元素节点，则进行元素节点的处理
         if (shapeFlag & ShapeFlags.ELEMENT) {
           processElement(
             n1,
@@ -436,9 +477,10 @@ function baseCreateRenderer(
             parentSuspense,
             namespace,
             slotScopeIds,
-            optimized,
+            optimized
           )
         } else if (shapeFlag & ShapeFlags.COMPONENT) {
+          // 组件节点
           processComponent(
             n1,
             n2,
@@ -448,9 +490,10 @@ function baseCreateRenderer(
             parentSuspense,
             namespace,
             slotScopeIds,
-            optimized,
+            optimized
           )
         } else if (shapeFlag & ShapeFlags.TELEPORT) {
+          // Teleport 节点
           ;(type as typeof TeleportImpl).process(
             n1 as TeleportVNode,
             n2 as TeleportVNode,
@@ -461,9 +504,10 @@ function baseCreateRenderer(
             namespace,
             slotScopeIds,
             optimized,
-            internals,
+            internals
           )
         } else if (__FEATURE_SUSPENSE__ && shapeFlag & ShapeFlags.SUSPENSE) {
+          // Suspense 节点
           ;(type as typeof SuspenseImpl).process(
             n1,
             n2,
@@ -474,14 +518,16 @@ function baseCreateRenderer(
             namespace,
             slotScopeIds,
             optimized,
-            internals,
+            internals
           )
         } else if (__DEV__) {
+          // 如果n2的类型是无效的，则抛出错误
           warn('Invalid VNode type:', type, `(${typeof type})`)
         }
     }
 
     // set ref
+    // 当一个节点有 ref 属性且存在父组件时，更新这个 ref 引用，这样可以通过 ref 获取到DOM元素或组件实例
     if (ref != null && parentComponent) {
       setRef(ref, n1 && n1.ref, parentSuspense, n2 || n1, !n2)
     }
@@ -492,7 +538,7 @@ function baseCreateRenderer(
       hostInsert(
         (n2.el = hostCreateText(n2.children as string)),
         container,
-        anchor,
+        anchor
       )
     } else {
       const el = (n2.el = n1.el!)
@@ -506,13 +552,13 @@ function baseCreateRenderer(
     n1,
     n2,
     container,
-    anchor,
+    anchor
   ) => {
     if (n1 == null) {
       hostInsert(
         (n2.el = hostCreateComment((n2.children as string) || '')),
         container,
-        anchor,
+        anchor
       )
     } else {
       // there's no support for dynamic comments
@@ -524,7 +570,7 @@ function baseCreateRenderer(
     n2: VNode,
     container: RendererElement,
     anchor: RendererNode | null,
-    namespace: ElementNamespace,
+    namespace: ElementNamespace
   ) => {
     // static nodes are only present when used with compiler-dom/runtime-dom
     // which guarantees presence of hostInsertStaticContent.
@@ -534,7 +580,7 @@ function baseCreateRenderer(
       anchor,
       namespace,
       n2.el,
-      n2.anchor,
+      n2.anchor
     )
   }
 
@@ -545,7 +591,7 @@ function baseCreateRenderer(
     n1: VNode,
     n2: VNode,
     container: RendererElement,
-    namespace: ElementNamespace,
+    namespace: ElementNamespace
   ) => {
     // static nodes are only patched during dev for HMR
     if (n2.children !== n1.children) {
@@ -557,7 +603,7 @@ function baseCreateRenderer(
         n2.children as string,
         container,
         anchor,
-        namespace,
+        namespace
       )
     } else {
       n2.el = n1.el
@@ -568,7 +614,7 @@ function baseCreateRenderer(
   const moveStaticNode = (
     { el, anchor }: VNode,
     container: RendererElement,
-    nextSibling: RendererNode | null,
+    nextSibling: RendererNode | null
   ) => {
     let next
     while (el && el !== anchor) {
@@ -598,7 +644,7 @@ function baseCreateRenderer(
     parentSuspense: SuspenseBoundary | null,
     namespace: ElementNamespace,
     slotScopeIds: string[] | null,
-    optimized: boolean,
+    optimized: boolean
   ) => {
     if (n2.type === 'svg') {
       namespace = 'svg'
@@ -615,7 +661,7 @@ function baseCreateRenderer(
         parentSuspense,
         namespace,
         slotScopeIds,
-        optimized,
+        optimized
       )
     } else {
       patchElement(
@@ -625,7 +671,7 @@ function baseCreateRenderer(
         parentSuspense,
         namespace,
         slotScopeIds,
-        optimized,
+        optimized
       )
     }
   }
@@ -638,7 +684,7 @@ function baseCreateRenderer(
     parentSuspense: SuspenseBoundary | null,
     namespace: ElementNamespace,
     slotScopeIds: string[] | null,
-    optimized: boolean,
+    optimized: boolean
   ) => {
     let el: RendererElement
     let vnodeHook: VNodeHook | undefined | null
@@ -648,7 +694,7 @@ function baseCreateRenderer(
       vnode.type as string,
       namespace,
       props && props.is,
-      props,
+      props
     )
 
     // mount children first, since some props may rely on child content
@@ -664,7 +710,7 @@ function baseCreateRenderer(
         parentSuspense,
         resolveChildrenNamespace(vnode, namespace),
         slotScopeIds,
-        optimized,
+        optimized
       )
     }
 
@@ -730,7 +776,7 @@ function baseCreateRenderer(
     vnode: VNode,
     scopeId: string | null,
     slotScopeIds: string[] | null,
-    parentComponent: ComponentInternalInstance | null,
+    parentComponent: ComponentInternalInstance | null
   ) => {
     if (scopeId) {
       hostSetScopeId(el, scopeId)
@@ -761,7 +807,7 @@ function baseCreateRenderer(
           parentVNode,
           parentVNode.scopeId,
           parentVNode.slotScopeIds,
-          parentComponent.parent,
+          parentComponent.parent
         )
       }
     }
@@ -776,7 +822,7 @@ function baseCreateRenderer(
     namespace: ElementNamespace,
     slotScopeIds,
     optimized,
-    start = 0,
+    start = 0
   ) => {
     for (let i = start; i < children.length; i++) {
       const child = (children[i] = optimized
@@ -791,7 +837,7 @@ function baseCreateRenderer(
         parentSuspense,
         namespace,
         slotScopeIds,
-        optimized,
+        optimized
       )
     }
   }
@@ -803,7 +849,7 @@ function baseCreateRenderer(
     parentSuspense: SuspenseBoundary | null,
     namespace: ElementNamespace,
     slotScopeIds: string[] | null,
-    optimized: boolean,
+    optimized: boolean
   ) => {
     const el = (n2.el = n1.el!)
     if (__DEV__ || __FEATURE_PROD_DEVTOOLS__) {
@@ -851,7 +897,7 @@ function baseCreateRenderer(
         parentComponent,
         parentSuspense,
         resolveChildrenNamespace(n2, namespace),
-        slotScopeIds,
+        slotScopeIds
       )
       if (__DEV__) {
         // necessary for HMR
@@ -868,7 +914,7 @@ function baseCreateRenderer(
         parentSuspense,
         resolveChildrenNamespace(n2, namespace),
         slotScopeIds,
-        false,
+        false
       )
     }
 
@@ -944,7 +990,7 @@ function baseCreateRenderer(
     parentComponent,
     parentSuspense,
     namespace: ElementNamespace,
-    slotScopeIds,
+    slotScopeIds
   ) => {
     for (let i = 0; i < newChildren.length; i++) {
       const oldVNode = oldChildren[i]
@@ -975,7 +1021,7 @@ function baseCreateRenderer(
         parentSuspense,
         namespace,
         slotScopeIds,
-        true,
+        true
       )
     }
   }
@@ -985,7 +1031,7 @@ function baseCreateRenderer(
     oldProps: Data,
     newProps: Data,
     parentComponent: ComponentInternalInstance | null,
-    namespace: ElementNamespace,
+    namespace: ElementNamespace
   ) => {
     if (oldProps !== newProps) {
       if (oldProps !== EMPTY_OBJ) {
@@ -997,7 +1043,7 @@ function baseCreateRenderer(
               oldProps[key],
               null,
               namespace,
-              parentComponent,
+              parentComponent
             )
           }
         }
@@ -1027,7 +1073,7 @@ function baseCreateRenderer(
     parentSuspense: SuspenseBoundary | null,
     namespace: ElementNamespace,
     slotScopeIds: string[] | null,
-    optimized: boolean,
+    optimized: boolean
   ) => {
     const fragmentStartAnchor = (n2.el = n1 ? n1.el : hostCreateText(''))!
     const fragmentEndAnchor = (n2.anchor = n1 ? n1.anchor : hostCreateText(''))!
@@ -1070,7 +1116,7 @@ function baseCreateRenderer(
         parentSuspense,
         namespace,
         slotScopeIds,
-        optimized,
+        optimized
       )
     } else {
       if (
@@ -1090,7 +1136,7 @@ function baseCreateRenderer(
           parentComponent,
           parentSuspense,
           namespace,
-          slotScopeIds,
+          slotScopeIds
         )
         if (__DEV__) {
           // necessary for HMR
@@ -1119,7 +1165,7 @@ function baseCreateRenderer(
           parentSuspense,
           namespace,
           slotScopeIds,
-          optimized,
+          optimized
         )
       }
     }
@@ -1134,7 +1180,7 @@ function baseCreateRenderer(
     parentSuspense: SuspenseBoundary | null,
     namespace: ElementNamespace,
     slotScopeIds: string[] | null,
-    optimized: boolean,
+    optimized: boolean
   ) => {
     n2.slotScopeIds = slotScopeIds
     if (n1 == null) {
@@ -1144,7 +1190,7 @@ function baseCreateRenderer(
           container,
           anchor,
           namespace,
-          optimized,
+          optimized
         )
       } else {
         mountComponent(
@@ -1154,7 +1200,7 @@ function baseCreateRenderer(
           parentComponent,
           parentSuspense,
           namespace,
-          optimized,
+          optimized
         )
       }
     } else {
@@ -1169,7 +1215,7 @@ function baseCreateRenderer(
     parentComponent,
     parentSuspense,
     namespace: ElementNamespace,
-    optimized,
+    optimized
   ) => {
     // 2.x compat may pre-create the component instance before actually
     // mounting
@@ -1180,7 +1226,7 @@ function baseCreateRenderer(
       (initialVNode.component = createComponentInstance(
         initialVNode,
         parentComponent,
-        parentSuspense,
+        parentSuspense
       ))
 
     if (__DEV__ && instance.type.__hmrId) {
@@ -1231,7 +1277,7 @@ function baseCreateRenderer(
         anchor,
         parentSuspense,
         namespace,
-        optimized,
+        optimized
       )
     }
 
@@ -1279,7 +1325,7 @@ function baseCreateRenderer(
     anchor,
     parentSuspense,
     namespace: ElementNamespace,
-    optimized,
+    optimized
   ) => {
     const componentUpdateFn = () => {
       if (!instance.isMounted) {
@@ -1326,7 +1372,7 @@ function baseCreateRenderer(
               instance.subTree,
               instance,
               parentSuspense,
-              null,
+              null
             )
             if (__DEV__) {
               endMeasure(instance, `hydrate`)
@@ -1340,7 +1386,7 @@ function baseCreateRenderer(
             ;(type as ComponentOptions).__asyncHydrate!(
               el as Element,
               instance,
-              hydrateSubTree,
+              hydrateSubTree
             )
           } else {
             hydrateSubTree()
@@ -1368,7 +1414,7 @@ function baseCreateRenderer(
             anchor,
             instance,
             parentSuspense,
-            namespace,
+            namespace
           )
           if (__DEV__) {
             endMeasure(instance, `patch`)
@@ -1387,7 +1433,7 @@ function baseCreateRenderer(
           const scopedInitialVNode = initialVNode
           queuePostRenderEffect(
             () => invokeVNodeHook(vnodeHook!, parent, scopedInitialVNode),
-            parentSuspense,
+            parentSuspense
           )
         }
         if (
@@ -1396,7 +1442,7 @@ function baseCreateRenderer(
         ) {
           queuePostRenderEffect(
             () => instance.emit('hook:mounted'),
-            parentSuspense,
+            parentSuspense
           )
         }
 
@@ -1416,7 +1462,7 @@ function baseCreateRenderer(
           ) {
             queuePostRenderEffect(
               () => instance.emit('hook:activated'),
-              parentSuspense,
+              parentSuspense
             )
           }
         }
@@ -1509,7 +1555,7 @@ function baseCreateRenderer(
           getNextHostNode(prevTree),
           instance,
           parentSuspense,
-          namespace,
+          namespace
         )
         if (__DEV__) {
           endMeasure(instance, `patch`)
@@ -1529,7 +1575,7 @@ function baseCreateRenderer(
         if ((vnodeHook = next.props && next.props.onVnodeUpdated)) {
           queuePostRenderEffect(
             () => invokeVNodeHook(vnodeHook!, parent, next!, vnode),
-            parentSuspense,
+            parentSuspense
           )
         }
         if (
@@ -1538,7 +1584,7 @@ function baseCreateRenderer(
         ) {
           queuePostRenderEffect(
             () => instance.emit('hook:updated'),
-            parentSuspense,
+            parentSuspense
           )
         }
 
@@ -1582,7 +1628,7 @@ function baseCreateRenderer(
   const updateComponentPreRender = (
     instance: ComponentInternalInstance,
     nextVNode: VNode,
-    optimized: boolean,
+    optimized: boolean
   ) => {
     nextVNode.component = instance
     const prevProps = instance.vnode.props
@@ -1598,6 +1644,23 @@ function baseCreateRenderer(
     resetTracking()
   }
 
+  /**
+   * 当patch函数匹配类型为复杂类型时，进入diff算法的处理流程，主要有两种情况：
+   * 1、有 key 的处理， 进入 patchKeyedChildren流程 ；
+   * 2、无 key 的处理， 进入 patchUnkeyedChildren流程
+   *
+   *
+   * @param n1
+   * @param n2
+   * @param container
+   * @param anchor
+   * @param parentComponent
+   * @param parentSuspense
+   * @param namespace
+   * @param slotScopeIds
+   * @param optimized
+   * @returns
+   */
   const patchChildren: PatchChildrenFn = (
     n1,
     n2,
@@ -1607,7 +1670,7 @@ function baseCreateRenderer(
     parentSuspense,
     namespace: ElementNamespace,
     slotScopeIds,
-    optimized = false,
+    optimized = false
   ) => {
     const c1 = n1 && n1.children
     const prevShapeFlag = n1 ? n1.shapeFlag : 0
@@ -1615,7 +1678,9 @@ function baseCreateRenderer(
 
     const { patchFlag, shapeFlag } = n2
     // fast path
+    // 这个patchFlag，是一个判断渲染的节点上包含key的一个标识符
     if (patchFlag > 0) {
+      // 当当前节点存在key时，执行的是patchKeyedChildren流程
       if (patchFlag & PatchFlags.KEYED_FRAGMENT) {
         // this could be either fully-keyed or mixed (some keyed some not)
         // presence of patchFlag means children are guaranteed to be arrays
@@ -1628,10 +1693,11 @@ function baseCreateRenderer(
           parentSuspense,
           namespace,
           slotScopeIds,
-          optimized,
+          optimized
         )
         return
       } else if (patchFlag & PatchFlags.UNKEYED_FRAGMENT) {
+        // 当当前节点不存在key时，执行的是patchUnkeyedChildren流程
         // unkeyed
         patchUnkeyedChildren(
           c1 as VNode[],
@@ -1642,7 +1708,7 @@ function baseCreateRenderer(
           parentSuspense,
           namespace,
           slotScopeIds,
-          optimized,
+          optimized
         )
         return
       }
@@ -1671,7 +1737,7 @@ function baseCreateRenderer(
             parentSuspense,
             namespace,
             slotScopeIds,
-            optimized,
+            optimized
           )
         } else {
           // no new children, just unmount old
@@ -1693,13 +1759,32 @@ function baseCreateRenderer(
             parentSuspense,
             namespace,
             slotScopeIds,
-            optimized,
+            optimized
           )
         }
       }
     }
   }
 
+  /**
+   * 处理的是节点没有key值的diff算法
+   * 步骤：
+   * 1、获取新旧vnode数组的长度
+   * 2、通过Math.min获取新旧vnode数组的最小长度，然后遍历短的vnode列表
+   * 3、相同的就不更新，不同的就更新
+   * 3、直到遍历完毕：
+   *   - 如果旧列表长度大于新列表长度，则删除剩余的旧节点
+   *   - 如果新列表长度大于旧列表长度，则挂载新节点
+   * @param c1
+   * @param c2
+   * @param container
+   * @param anchor
+   * @param parentComponent
+   * @param parentSuspense
+   * @param namespace
+   * @param slotScopeIds
+   * @param optimized
+   */
   const patchUnkeyedChildren = (
     c1: VNode[],
     c2: VNodeArrayChildren,
@@ -1709,14 +1794,17 @@ function baseCreateRenderer(
     parentSuspense: SuspenseBoundary | null,
     namespace: ElementNamespace,
     slotScopeIds: string[] | null,
-    optimized: boolean,
+    optimized: boolean
   ) => {
     c1 = c1 || EMPTY_ARR
     c2 = c2 || EMPTY_ARR
+    // 获取新旧vnode数组的长度
     const oldLength = c1.length
     const newLength = c2.length
+    // 获取新旧vnode数组的最小长度
     const commonLength = Math.min(oldLength, newLength)
     let i
+    // 遍历短的vnode列表
     for (i = 0; i < commonLength; i++) {
       const nextChild = (c2[i] = optimized
         ? cloneIfMounted(c2[i] as VNode)
@@ -1730,9 +1818,10 @@ function baseCreateRenderer(
         parentSuspense,
         namespace,
         slotScopeIds,
-        optimized,
+        optimized
       )
     }
+    // 如果旧列表长度大于新列表长度，则删除剩余的旧节点
     if (oldLength > newLength) {
       // remove old
       unmountChildren(
@@ -1741,9 +1830,10 @@ function baseCreateRenderer(
         parentSuspense,
         true,
         false,
-        commonLength,
+        commonLength
       )
     } else {
+      // 如果新列表长度大于旧列表长度，则挂载新节点
       // mount new
       mountChildren(
         c2,
@@ -1754,12 +1844,24 @@ function baseCreateRenderer(
         namespace,
         slotScopeIds,
         optimized,
-        commonLength,
+        commonLength
       )
     }
   }
 
   // can be all-keyed or mixed
+  /**
+   * 处理的是节点有key值的diff算法
+   * @param c1
+   * @param c2
+   * @param container
+   * @param parentAnchor
+   * @param parentComponent
+   * @param parentSuspense
+   * @param namespace
+   * @param slotScopeIds
+   * @param optimized
+   */
   const patchKeyedChildren = (
     c1: VNode[],
     c2: VNodeArrayChildren,
@@ -1769,7 +1871,7 @@ function baseCreateRenderer(
     parentSuspense: SuspenseBoundary | null,
     namespace: ElementNamespace,
     slotScopeIds: string[] | null,
-    optimized: boolean,
+    optimized: boolean
   ) => {
     let i = 0
     const l2 = c2.length
@@ -1779,12 +1881,17 @@ function baseCreateRenderer(
     // 1. sync from start
     // (a b) c
     // (a b) d e
+    /**
+     * 首次遍历，是从队列头节点开始遍历，这一步是diff的第一步，从头部开始遍历，如果n1和n2是相同的虚拟节点，则进行patch，
+     * 如果n1和n2不相同，则退出循环，进行下一步，同时记录下当前的索引i
+     */
     while (i <= e1 && i <= e2) {
       const n1 = c1[i]
       const n2 = (c2[i] = optimized
         ? cloneIfMounted(c2[i] as VNode)
         : normalizeVNode(c2[i]))
       if (isSameVNodeType(n1, n2)) {
+        // 如果n1和n2是相同的虚拟节点，则进行patch
         patch(
           n1,
           n2,
@@ -1794,7 +1901,7 @@ function baseCreateRenderer(
           parentSuspense,
           namespace,
           slotScopeIds,
-          optimized,
+          optimized
         )
       } else {
         break
@@ -1802,6 +1909,12 @@ function baseCreateRenderer(
       i++
     }
 
+    /**
+     * 第二次遍历，是从队尾节点开始遍历，从尾部开始遍历，如果遇到遇到第一次记录的下标索引则停止
+     * 在遍历过程中：
+     * 1、如果n1和n2是相同的虚拟节点，则进行patch，
+     * 2、如果n1和n2不相同，则退出循环，进行下一步，同时记录下当前的索引e1和e2
+     */
     // 2. sync from end
     // a (b c)
     // d e (b c)
@@ -1820,7 +1933,7 @@ function baseCreateRenderer(
           parentSuspense,
           namespace,
           slotScopeIds,
-          optimized,
+          optimized
         )
       } else {
         break
@@ -1829,6 +1942,22 @@ function baseCreateRenderer(
       e2--
     }
 
+    /**
+     * 旧节点挂载完毕
+     * 如果新的节点大于旧的节点数，则对于剩下的节点全部以新的vnode处理，此时说明已经patch完所有相同的vnode
+     *
+     * 旧列表：[a,b]
+     * 新列表：[a,b,c,d]
+     *
+     * 当从首节点遍历后：i=2
+     * 当从尾节点遍历后：e1=1,e2=2
+     * 此时i>e1,i<=e2,说明新列表中剩下的节点都是需要挂载的节点
+     *
+     * 如何进行挂载呢？
+     * 1、找到需要插入位置的锚点（anchor）
+     * 2、i<= e2时，循环剩余的新节点i到e2，进行patch 2->2
+     *
+     */
     // 3. common sequence + mount
     // (a b)
     // (a b) c
@@ -1839,6 +1968,8 @@ function baseCreateRenderer(
     if (i > e1) {
       if (i <= e2) {
         const nextPos = e2 + 1
+        // 如果nextPos小于l2，则说明nextPos位置的节点是存在的，则将nextPos位置的节点作为锚点
+        // 否则，说明nextPos位置的节点是不存在的，则将parentAnchor作为锚点
         const anchor = nextPos < l2 ? (c2[nextPos] as VNode).el : parentAnchor
         while (i <= e2) {
           patch(
@@ -1852,13 +1983,29 @@ function baseCreateRenderer(
             parentSuspense,
             namespace,
             slotScopeIds,
-            optimized,
+            optimized
           )
           i++
         }
       }
     }
 
+    /**
+     * 旧节点挂载完毕
+     * 如果新的节点小于旧的节点数，则对于剩下的节点全部进行卸载
+     *
+     * 旧列表：[a,b,c,d]
+     * 新列表：[a,b]
+     *
+     * 当从首节点遍历后：i=2
+     * 当从尾节点遍历后：e1=3,e2=1
+     * 此时i>e2,说明旧列表中剩下的节点都是需要卸载的节点
+     *
+     * 如何进行卸载呢？
+     * 1、i<= e1时，循环i到e1，进行unmount 2->3
+     *
+     *
+     */
     // 4. common sequence + unmount
     // (a b) c
     // (a b)
@@ -1873,6 +2020,23 @@ function baseCreateRenderer(
       }
     }
 
+    /**
+     * 如果新旧节点都有剩余，则要进行最长递增子序列的计算
+     *
+     * 旧列表：[a,b,c,d]
+     * 新列表：[a,b,e,d,c,h]
+     *
+     * 当从首节点遍历后：i=2
+     * 当从尾节点遍历后：e1=3,e2=5
+     *
+     * 此时i<=e1,i<=e2,说明新旧列表中都有剩余的节点
+     *
+     * 如何进行处理呢？
+     * 1、构建keyToNewIndexMap
+     * 2、循环旧列表，进行patch
+     * 3、循环新列表，进行patch
+     *
+     */
     // 5. unknown sequence
     // [i ... e1 + 1]: a b [c d e] f g
     // [i ... e2 + 1]: a b [e d c h] f g
@@ -1882,6 +2046,14 @@ function baseCreateRenderer(
       const s2 = i // next starting index
 
       // 5.1 build key:index map for newChildren
+      /**
+       * 构建keyToNewIndexMap
+       * 创建映射表，通过组件的key值来跟踪更新过程中子组件的位置，具体过程：
+       * 1、创建一个映射表存储组件key和它们索引之间的关系
+       * 2、遍历新虚拟DOM中的子节点
+       * 3、对每个子节点进行标准化或克隆处理
+       * 4、如果子节点有key值，则将key值和索引之间的关系存储到映射表中
+       */
       const keyToNewIndexMap: Map<PropertyKey, number> = new Map()
       for (i = s2; i <= e2; i++) {
         const nextChild = (c2[i] = optimized
@@ -1892,13 +2064,26 @@ function baseCreateRenderer(
             warn(
               `Duplicate keys found during update:`,
               JSON.stringify(nextChild.key),
-              `Make sure keys are unique.`,
+              `Make sure keys are unique.`
             )
           }
           keyToNewIndexMap.set(nextChild.key, i)
         }
       }
 
+      /**
+       * 这部分代码负责处理子节点的更新、移动和删除，具体功能”
+       * 1、初始化追踪变量
+       * 2、遍历旧列表，尝试匹配和更新节点
+       * 1）如果已处理的新节点数量大于需要处理的节点数量，则删除剩余的旧节点
+       * 2）为每个旧节点查找在新列表的位置：
+       *   - 如果旧节点有key值，则通过keyToNewIndexMap查找新节点位置
+       *   - 如果旧节点没有key值，则尝试匹配相同类型的节点
+       * 3）如果旧节点没有找到匹配的新节点，则删除该旧节点
+       * 4）如果旧节点找到对应位置：更新映射数组，检测节点是否移动，然后调用patch更新节点
+       *
+       *
+       */
       // 5.2 loop through old children left to be patched and try to patch
       // matching nodes & remove nodes that are no longer present
       let j
@@ -1955,7 +2140,7 @@ function baseCreateRenderer(
             parentSuspense,
             namespace,
             slotScopeIds,
-            optimized,
+            optimized
           )
           patched++
         }
@@ -1984,7 +2169,7 @@ function baseCreateRenderer(
             parentSuspense,
             namespace,
             slotScopeIds,
-            optimized,
+            optimized
           )
         } else if (moved) {
           // move if:
@@ -2005,7 +2190,7 @@ function baseCreateRenderer(
     container,
     anchor,
     moveType,
-    parentSuspense = null,
+    parentSuspense = null
   ) => {
     const { el, type, transition, children, shapeFlag } = vnode
     if (shapeFlag & ShapeFlags.COMPONENT) {
@@ -2078,7 +2263,7 @@ function baseCreateRenderer(
     parentComponent,
     parentSuspense,
     doRemove = false,
-    optimized = false,
+    optimized = false
   ) => {
     const {
       type,
@@ -2140,7 +2325,7 @@ function baseCreateRenderer(
           parentComponent,
           parentSuspense,
           internals,
-          doRemove,
+          doRemove
         )
       } else if (
         dynamicChildren &&
@@ -2160,7 +2345,7 @@ function baseCreateRenderer(
           parentComponent,
           parentSuspense,
           false,
-          true,
+          true
         )
       } else if (
         (type === Fragment &&
@@ -2256,7 +2441,7 @@ function baseCreateRenderer(
   const unmountComponent = (
     instance: ComponentInternalInstance,
     parentSuspense: SuspenseBoundary | null,
-    doRemove?: boolean,
+    doRemove?: boolean
   ) => {
     if (__DEV__ && instance.type.__hmrId) {
       unregisterHMR(instance)
@@ -2298,7 +2483,7 @@ function baseCreateRenderer(
     ) {
       queuePostRenderEffect(
         () => instance.emit('hook:destroyed'),
-        parentSuspense,
+        parentSuspense
       )
     }
     queuePostRenderEffect(() => {
@@ -2334,7 +2519,7 @@ function baseCreateRenderer(
     parentSuspense,
     doRemove = false,
     optimized = false,
-    start = 0,
+    start = 0
   ) => {
     for (let i = start; i < children.length; i++) {
       unmount(children[i], parentComponent, parentSuspense, doRemove, optimized)
@@ -2370,7 +2555,7 @@ function baseCreateRenderer(
         null,
         null,
         null,
-        namespace,
+        namespace
       )
     }
     container._vnode = vnode
@@ -2399,7 +2584,7 @@ function baseCreateRenderer(
   let hydrateNode: ReturnType<typeof createHydrationFunctions>[1] | undefined
   if (createHydrationFns) {
     ;[hydrate, hydrateNode] = createHydrationFns(
-      internals as RendererInternals<Node, Element>,
+      internals as RendererInternals<Node, Element>
     )
   }
 
@@ -2412,7 +2597,7 @@ function baseCreateRenderer(
 
 function resolveChildrenNamespace(
   { type, props }: VNode,
-  currentNamespace: ElementNamespace,
+  currentNamespace: ElementNamespace
 ): ElementNamespace {
   return (currentNamespace === 'svg' && type === 'foreignObject') ||
     (currentNamespace === 'mathml' &&
@@ -2426,7 +2611,7 @@ function resolveChildrenNamespace(
 
 function toggleRecurse(
   { effect, job }: ComponentInternalInstance,
-  allowed: boolean,
+  allowed: boolean
 ) {
   if (allowed) {
     effect.flags |= EffectFlags.ALLOW_RECURSE
@@ -2439,7 +2624,7 @@ function toggleRecurse(
 
 export function needTransition(
   parentSuspense: SuspenseBoundary | null,
-  transition: TransitionHooks | null,
+  transition: TransitionHooks | null
 ): boolean | null {
   return (
     (!parentSuspense || (parentSuspense && !parentSuspense.pendingBranch)) &&
@@ -2462,7 +2647,7 @@ export function needTransition(
 export function traverseStaticChildren(
   n1: VNode,
   n2: VNode,
-  shallow = false,
+  shallow = false
 ): void {
   const ch1 = n1.children
   const ch2 = n2.children
@@ -2536,7 +2721,7 @@ function getSequence(arr: number[]): number[] {
 }
 
 function locateNonHydratedAsyncRoot(
-  instance: ComponentInternalInstance,
+  instance: ComponentInternalInstance
 ): ComponentInternalInstance | undefined {
   const subComponent = instance.subTree.component
   if (subComponent) {
